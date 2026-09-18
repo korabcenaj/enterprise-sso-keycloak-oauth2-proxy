@@ -1,0 +1,126 @@
+{
+  "id": "enterprise-platform",
+  "realm": "enterprise-platform",
+  "displayName": "Enterprise Platform SSO",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 5,
+  "roles": {
+    "realm": [
+      {
+        "name": "platform-admin",
+        "description": "Full administrative control across all platform services and infrastructure"
+      },
+      {
+        "name": "platform-engineer",
+        "description": "Deployment, observability, and operational access to platform workloads"
+      },
+      {
+        "name": "developer",
+        "description": "Read/write access to application namespaces and logs"
+      },
+      {
+        "name": "viewer",
+        "description": "Read-only access to platform metrics, dashboards, and audit trails"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "PlatformAdmins",
+      "path": "/PlatformAdmins",
+      "realmRoles": ["platform-admin"]
+    },
+    {
+      "name": "PlatformEngineers",
+      "path": "/PlatformEngineers",
+      "realmRoles": ["platform-engineer"]
+    },
+    {
+      "name": "Developers",
+      "path": "/Developers",
+      "realmRoles": ["developer"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "oauth2-proxy",
+      "name": "OAuth2-Proxy Sidecar & Ingress Gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "oauth2-proxy-client-secret-placeholder",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "https://*.enterprise.internal/oauth2/callback",
+        "https://auth.enterprise.internal/oauth2/callback"
+      ],
+      "webOrigins": [
+        "https://*.enterprise.internal"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ]
+    },
+    {
+      "clientId": "argocd",
+      "name": "ArgoCD GitOps Platform",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "argocd-client-secret-placeholder",
+      "standardFlowEnabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "https://argocd.enterprise.internal/auth/callback"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "profile",
+        "roles",
+        "email",
+        "groups"
+      ]
+    },
+    {
+      "clientId": "grafana",
+      "name": "Grafana Observability Portal",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "grafana-client-secret-placeholder",
+      "standardFlowEnabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "https://grafana.enterprise.internal/login/generic_oauth"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "profile",
+        "roles",
+        "email",
+        "groups"
+      ]
+    }
+  ]
+}

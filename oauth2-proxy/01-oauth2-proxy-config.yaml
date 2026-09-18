@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-proxy-config
+  namespace: identity
+data:
+  oauth2-proxy.cfg: |
+    http_address = "0.0.0.0:4180"
+    reverse_proxy = true
+    upstreams = [
+      "http://legacy-app.prod.svc.cluster.local:8080/"
+    ]
+    
+    # OIDC Provider Configuration
+    provider = "keycloak-oidc"
+    provider_display_name = "Enterprise SSO"
+    oidc_issuer_url = "https://sso.enterprise.internal/realms/enterprise-platform"
+    client_id = "oauth2-proxy"
+    
+    # Cookie Session Settings
+    cookie_name = "_enterprise_sso"
+    cookie_secure = true
+    cookie_httponly = true
+    cookie_samesite = "lax"
+    cookie_expire = "168h"
+    cookie_refresh = "1h"
+    cookie_domains = [".enterprise.internal"]
+    
+    # Header Injection for Upstreams
+    pass_access_token = true
+    pass_id_token = true
+    pass_user_headers = true
+    set_xauthrequest = true
+    set_authorization_header = true
+    
+    # Email and Domain Restrictions
+    email_domains = [
+      "enterprise.com",
+      "partner.internal"
+    ]
+    
+    # Scope and RBAC Enforcement
+    scope = "openid email profile roles"
+    allowed_roles = ["platform-admin", "platform-engineer", "developer", "viewer"]
